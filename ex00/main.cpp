@@ -2,7 +2,7 @@
 
 int main(int argc, char *arv[])
 {
-    if(argc == 2)
+    if(argc >= 2)
     {
         ScalarConverter::convert(arv[1]);
     }

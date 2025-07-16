@@ -2,6 +2,9 @@
 #include <iostream>
 #include <iomanip>
 #include <cmath> 
+#include <sstream>
+#include <climits>
+
 class  ScalarConverter {
 private:
     const static short T_CHAR = 0;

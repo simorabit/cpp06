@@ -30,27 +30,49 @@ ScalarConverter &ScalarConverter::operator=(const ScalarConverter &other)
 }
 bool isNumber(const std::string &str)
 {
-    try
-    {
-        std::stoi(str);
-        return true;
-    }
-    catch (const std::exception &)
-    {
-        return false;
-    }
+    std::stringstream ss(str);
+    int tmp;
+    ss >> tmp;
+    return !ss.fail() && ss.eof();
 }
-bool isFloating(const std::string &str)
+
+bool isFloat(const std::string &str)
 {
-    try
-    {
-        std::stod(str);
-        return true;
-    }
-    catch (const std::exception &)
-    {
-        return false;
-    }
+    std::string copy = str;
+    if (!copy.empty() && copy.back() == 'f')
+        copy.pop_back();  // remove 'f'
+
+    std::stringstream ss(copy);
+    float tmp;
+    ss >> tmp;
+    return !ss.fail() && ss.eof();
+}
+
+
+float stringToFloat(const std::string &str)
+{
+    std::string copy = str;
+
+    if(!copy.empty() && copy.back() == 'f')
+        copy.pop_back();
+    std::stringstream ss(copy);
+    float result = 0.0f;
+    ss >> result;
+    return result;
+}
+int stringToNumber(const std::string &str)
+{
+    std::stringstream ss(str);
+    int result = 0.0f;
+    ss >> result;
+    return result;
+}
+double stringToDouble(const std::string &str)
+{
+    std::stringstream ss(str);
+    double result = 0.0f;
+    ss >> result;
+    return result;
 }
 bool isChar(std::string &str)
 {
@@ -60,9 +82,9 @@ bool isChar(std::string &str)
 void printChar(char c)
 {
     if (isprint(c))
-        std::cout << "char: " << c << std::endl;
+        std::cout << "char: '" << c << "'" << std::endl;
     else
-        std::cout << "char: Non displayable" << c << std::endl;
+        std::cout << "char: Non displayable" << std::endl;
 }
 
 void ScalarConverter::displayTypes(short type, std::string &str)
@@ -72,68 +94,106 @@ void ScalarConverter::displayTypes(short type, std::string &str)
         char res = str[0];
 
         std::cout << "char " << res << std::endl;
-        std::cout << "int " << static_cast<int>(res)  << std::endl;
+        std::cout << "int " << static_cast<int>(res) << std::endl;
         std::cout << "float " << std::fixed << std::setprecision(1) << static_cast<float>(res) << "f" << std::endl;
         std::cout << "double " << std::fixed << std::setprecision(1) << static_cast<double>(res) << std::endl;
     }
     else if (type == T_FLOAT)
     {
-        float res = std::stof(str);
+        float res = stringToFloat(str);
 
-        printChar((static_cast<char>(res)));
-        std::cout << "int " << static_cast<int>(res) << std::endl;
-        std::cout << "float " << res << std::endl;
+        if(res >= 0 && res <= 255)
+            printChar((static_cast<char>(res)));
+        else
+            std::cout << "char : Impossible" << std::endl;
+        if (!std::isnan(res))
+        {
+            if (res > INT_MAX || res < INT_MIN)
+                std::cout << "int : Impossible" << std::endl;
+            else
+                std::cout << "int : " << static_cast<int>(res) << std::endl;
+        }
+        std::cout << "float " << std::fixed << std::setprecision(1) << res << "f"  << std::endl;
         std::cout << "double " << std::fixed << std::setprecision(1) << static_cast<double>(res) << std::endl;
     }
     else if (type == T_DOUBLE)
     {
-        double res = std::stod(str);
+        double res = stringToDouble(str);
 
-        printChar((static_cast<char>(res)));
-        std::cout << "int " << static_cast<int>(res) << std::endl;
-        std::cout << "float " << std::fixed << std::setprecision(1) << static_cast<float>(res) << "f" << std::endl;
-        std::cout << "double " << res << std::endl;
-    }
-    else if (type == NOD)
-    {
-        double res = std::stod(str);
-
-        std::cout << "char: Impossible" << std::endl;
-        if (std::isnan(res) || std::isinf(res))
-            std::cout << "int: impossible" << std::endl;
+        if (!std::isnan(res))
+        {
+            if(res >= 0 && res <= 255)
+                printChar((static_cast<char>(res)));
+            else
+                std::cout << "char : Impossible" << std::endl;
+            if (res > INT_MAX || res < INT_MIN)
+                std::cout << "int : Impossible" << std::endl;
+            else
+                std::cout << "int : " << static_cast<int>(res) << std::endl;
+        }
         else
-            std::cout << "int " << static_cast<int>(res) << std::endl;
-        std::cout << "float " << std::fixed << std::setprecision(1) << static_cast<float>(res) << "f" << std::endl;
-        std::cout << "double " << res << std::endl;
+        {
+            std::cout << "char : Impossible" << std::endl;
+            std::cout << "int : Impossible" << std::endl;
+        }
+        std::cout << "float : " << std::fixed << std::setprecision(1) << static_cast<float>(res) << "f" << std::endl;
+        std::cout << "double : " << res << std::endl;
     }
     else if (type == T_INT)
     {
-        int res = std::stoi(str);
-        printChar((static_cast<char>(res)));
-        std::cout << "int " << res << std::endl;
+        int res = stringToNumber(str);
+         if(res >= 0 && res <= 255)
+                printChar((static_cast<char>(res)));
+        else
+                std::cout << "char : Impossible" << std::endl;
+        if (res > INT_MAX || res < INT_MIN)
+            std::cout << "int Impossible" << std::endl;
+        else
+            std::cout << "int " << static_cast<int>(res) << std::endl;
         std::cout << "float " << std::fixed << std::setprecision(1) << static_cast<float>(res) << "f" << std::endl;
         std::cout << "double " << std::fixed << std::setprecision(1) << static_cast<double>(res) << std::endl;
     }
     else
-        std::cout << "Please Enter Valid Input" << std::endl;
+    {
+
+        std::cout << "char: Impossible" << std::endl;
+        std::cout << "int: Impossible" << std::endl;
+        if (str == "nan")
+        {
+            std::cout << "float: nanf" << std::endl;
+            std::cout << "double: nan" << std::endl;
+        }
+        else if (str == "-inf")
+        {
+            std::cout << "float: -inff" << std::endl;
+            std::cout << "double: -inf" << std::endl;
+        }
+        else if (str == "inf")
+        {
+            std::cout << "float: inff" << std::endl;
+            std::cout << "double: inf" << std::endl;
+        }
+        else{
+            std::cout << "float: Impossible" << std::endl;
+            std::cout << "double: Impossible" << std::endl;
+        }
+    }
 }
 
 void ScalarConverter::convert(std::string str)
 {
-    short types = -1;
+    short types = NOD;
 
     if (isChar(str))
         types = T_CHAR;
-    else if (isFloating(str))
-    {
-        if (str.find('.') != std::string::npos && str.find("f") != std::string::npos)
-            types = T_FLOAT;
-        else if(str.find('.') != std::string::npos)
-            types = T_DOUBLE;
-        else if(!isNumber(str))
-            types = NOD;
-    }
-    if (isNumber(str) && types != NOD)
+    else if (isNumber(str))
         types = T_INT;
+    else if (isFloat(str))
+    {
+        if (str.find('f') != std::string::npos)
+            types = T_FLOAT;
+        else
+            types = T_DOUBLE;
+    }
     displayTypes(types, str);
 }
