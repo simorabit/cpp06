@@ -63,5 +63,5 @@ int main()
     B bss = B();
     C bsx = C();
     Base *base = generate();
-    identify(bsx);
+    identify(base);
 }

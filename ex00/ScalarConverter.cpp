@@ -146,10 +146,7 @@ void ScalarConverter::displayTypes(short type, std::string &str)
                 printChar((static_cast<char>(res)));
         else
                 std::cout << "char : Impossible" << std::endl;
-        if (res > INT_MAX || res < INT_MIN)
-            std::cout << "int Impossible" << std::endl;
-        else
-            std::cout << "int " << static_cast<int>(res) << std::endl;
+        std::cout << "int " << static_cast<int>(res) << std::endl;
         std::cout << "float " << std::fixed << std::setprecision(1) << static_cast<float>(res) << "f" << std::endl;
         std::cout << "double " << std::fixed << std::setprecision(1) << static_cast<double>(res) << std::endl;
     }

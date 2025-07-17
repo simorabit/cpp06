@@ -13,7 +13,7 @@ all: $(TARGET)
 $(TARGET): $(OBJS) 
 	$(CC) $(CFLAGS) -o $@ $(OBJS)
 	
-%.o: %.cpp Serializer.hpp  Data.hpp
+%.o: %.cpp Serializer.hpp  Data.hpp A.hpp B.hpp C.hpp
 	$(CC) $(CFLAGS) -c $< -o $@
 	
 clean:
